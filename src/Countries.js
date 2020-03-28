@@ -6,11 +6,17 @@ export default function Countries() {
     const [countries, setCountries] = useState([])
     const [search, setSearch] = useState("")
     const [countryPopulations, setCountryPopulations] = useState()
+    const [reverse, setReverse] = useState(false)
 
-    const displayCountries = countries
+    let displayCountries = countries
                                 .filter(country => country.Country.toLowerCase().includes(search.toLowerCase()) && country.TotalConfirmed > 0 && countryPopulations.has(country.Country))
                                 .sort((a, b) => (b.TotalConfirmed/countryPopulations.get(b.Country)) - (a.TotalConfirmed/countryPopulations.get(a.Country)))
-                                .slice(0, 10)
+    
+    if (reverse) {
+        displayCountries.reverse()
+    }
+
+    displayCountries = displayCountries.slice(0, 10)
 
     const data = {
         labels: displayCountries.map(country => country.Country), 
@@ -34,7 +40,7 @@ export default function Countries() {
             .catch(error => console.log(error))
 
         let populationMap = new Map()
-        
+
         for (const populationDatum of populationData) {
             if (populationDatum["Country Name"] === "United States") {
                 populationMap.set("US", populationDatum["Value"]);
@@ -58,6 +64,14 @@ export default function Countries() {
                     placeholder = "Search"
                     value = {search}
                     onChange = {event => setSearch(event.target.value)}
+                />
+            </label>
+            <label> Reverse Sorting:
+                <input 
+                    type = "checkbox"
+                    name = "reverse"
+                    checked = {reverse}
+                    onClick = {() => setReverse(!reverse)}
                 />
             </label>
             <Bar
