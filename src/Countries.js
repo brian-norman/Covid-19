@@ -4,9 +4,11 @@ import populations from './populations.json'
 
 export default function Test() {
     const [countries, setCountries] = useState([])
+    const [search, setSearch] = useState("")
 
     const data = {
         labels: countries
+                    .filter(country => country.Country.toLowerCase().includes(search.toLowerCase()))
                     .sort((a, b) => b.TotalConfirmed - a.TotalConfirmed)
                     .slice(0, 8)
                     .map(country => country.Country),
@@ -19,6 +21,7 @@ export default function Test() {
                 hoverBackgroundColor: 'rgba(255,99,132,0.4)',
                 hoverBorderColor: 'rgba(255,99,132,1)',            
                 data: countries
+                        .filter(country => country.Country.toLowerCase().includes(search.toLowerCase()))
                         .sort((a, b) => b.TotalConfirmed - a.TotalConfirmed)
                         .slice(0,8)
                         .map(country => country.TotalConfirmed)
@@ -36,6 +39,15 @@ export default function Test() {
     return (
         <div>
             <h2>Countries and Infected Population</h2>
+            <label> Search for country: 
+                <input
+                    className = "Search"
+                    type = "text"
+                    placeholder = "Search"
+                    value = {search}
+                    onChange = {event => setSearch(event.target.value)}
+                />
+            </label>
             <Bar
                 data={data}
                 width={100}
